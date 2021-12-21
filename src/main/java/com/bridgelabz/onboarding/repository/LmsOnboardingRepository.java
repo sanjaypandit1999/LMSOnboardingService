@@ -2,14 +2,15 @@ package com.bridgelabz.onboarding.repository;
 
 import java.util.Optional;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import com.bridgelabz.onboarding.model.LmsOnboarding;
+@Repository
+public interface LmsOnboardingRepository extends MongoRepository<LmsOnboarding, Long> {
 
-public interface LmsOnboardingRepository extends JpaRepository<LmsOnboarding, Long> {
-
-	@Query(value = "select * from onboarding_candidate where email=?1", nativeQuery = true)
-	Optional<LmsOnboarding> findAllByEmail(String email);
+	@Query("{ 'email' : ?0 }")
+	Optional<LmsOnboarding> findByEmail(String email);
 
 }

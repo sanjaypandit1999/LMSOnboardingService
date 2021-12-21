@@ -2,12 +2,15 @@ package com.bridgelabz.onboarding;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.ApplicationContext;
 
 import lombok.extern.slf4j.Slf4j;
 
-@SpringBootApplication
+@SpringBootApplication(exclude = {HibernateJpaAutoConfiguration.class})
 @Slf4j
+@EnableEurekaClient
 public class LmsOnboardingServiceApplication {
 
 	public static void main(String[] args) {

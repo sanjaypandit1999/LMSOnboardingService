@@ -10,8 +10,12 @@ import org.springframework.stereotype.Service;
 import com.bridgelabz.onboarding.dto.LmsOnboardingDTO;
 import com.bridgelabz.onboarding.dto.ResponseDTO;
 import com.bridgelabz.onboarding.exception.LmsOnboardingException;
+import com.bridgelabz.onboarding.model.LmsBankInfo;
 import com.bridgelabz.onboarding.model.LmsOnboarding;
+import com.bridgelabz.onboarding.model.LmsQualificationInfo;
+import com.bridgelabz.onboarding.repository.LmsBankRepository;
 import com.bridgelabz.onboarding.repository.LmsOnboardingRepository;
+import com.bridgelabz.onboarding.repository.LmsQualificationRepository;
 import com.bridgelabz.onboarding.util.Email;
 import com.bridgelabz.onboarding.util.JwtToken;
 @Service
@@ -26,6 +30,12 @@ public class LmsOnboardingService implements ILmsOnboardingService {
 	Email emailConfig;
 	@Autowired
 	MailService mailService;
+	@Autowired
+	SequenceGenerator sequenceGenerator;
+	@Autowired
+	LmsQualificationRepository qualificationRepository;
+	@Autowired
+	LmsBankRepository bankRepository;
 
 	@Override
 	public ResponseDTO getCandidatOnboardingData(String token) {
@@ -61,11 +71,25 @@ public class LmsOnboardingService implements ILmsOnboardingService {
 	
 	}
 
+	@SuppressWarnings("static-access")
 	@Override
 	public ResponseDTO addOnboardingCandidateData(String token, LmsOnboardingDTO onboardingDTO) {
-			LmsOnboarding onboarding = modelmapper.map(onboardingDTO, LmsOnboarding.class);
-			onboardingRepository.save(onboarding);
-			return new ResponseDTO("Candidate is added", onboarding);
+		LmsOnboarding lmsOnboarding = new LmsOnboarding();
+		lmsOnboarding.setId(sequenceGenerator.generateSequence(lmsOnboarding.SEQUENCE_NAME));
+		Optional<LmsQualificationInfo> lmsQualificationInfo = qualificationRepository.findById(onboardingDTO.getQualification_Id());
+		if(lmsQualificationInfo.isPresent()){
+			lmsOnboarding.setCandidateQualificationInfo(lmsQualificationInfo.get());
+		}else
+			throw new LmsOnboardingException("qualification id not present");
+		Optional<LmsBankInfo> bankInfo = bankRepository.findById(onboardingDTO.getBank_Id());
+		if(bankInfo.isPresent()){
+			lmsOnboarding.setCandidateBankInfo(bankInfo.get());
+		}else
+		throw new LmsOnboardingException("bank id not present");
+		lmsOnboarding.addData(onboardingDTO);
+		  modelmapper.map(onboardingDTO, LmsOnboarding.class);
+			onboardingRepository.save(lmsOnboarding);
+			return new ResponseDTO("Candidate is added", lmsOnboarding);
 
 	}
 
@@ -84,9 +108,9 @@ public class LmsOnboardingService implements ILmsOnboardingService {
 	@Override
 	public ResponseDTO jobOfferMail(String token, String email) {
 		// TODO Auto-generated method stub
-		Optional<LmsOnboarding> isUserPresent = onboardingRepository.findAllByEmail(email);
+		Optional<LmsOnboarding> isUserPresent = onboardingRepository.findByEmail(email);
 		System.out.println(email);
-		System.out.println(isUserPresent);
+		System.out.println(isUserPresent.get());
 		if (isUserPresent.isPresent()) {
 			emailConfig.setTo(email);
 			emailConfig.setSubject("Job Offer");

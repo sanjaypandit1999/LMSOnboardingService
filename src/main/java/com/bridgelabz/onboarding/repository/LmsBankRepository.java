@@ -1,9 +1,11 @@
 package com.bridgelabz.onboarding.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.stereotype.Repository;
 
 import com.bridgelabz.onboarding.model.LmsBankInfo;
 
-public interface LmsBankRepository extends JpaRepository<LmsBankInfo, Long>{
+@Repository
+public interface LmsBankRepository extends MongoRepository<LmsBankInfo, Long>{
 
 }

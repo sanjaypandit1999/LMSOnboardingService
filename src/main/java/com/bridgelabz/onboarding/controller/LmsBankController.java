@@ -19,38 +19,66 @@ import com.bridgelabz.onboarding.services.ILmsBankService;
 
 /**
  *  
- *   Purpose: controller for user service
+ * Purpose: controller for user bank service
  *
  * @author Sanjay
  *  @version 1.0
- *  @since   12-15-2021
+ *  @since   12-21-2021
  */
 
 @RestController
 @RequestMapping("/bankinfo")
 public class LmsBankController {
+	
+	 /**
+     * purpose to get object from bean by using @Autowired
+     *
+     */
 	@Autowired
 	ILmsBankService bankService;
 	
-	
+	 /**
+     * purpose to add bank details  in database
+     *
+     * @param bankInfoDTO and token
+     * @return UserResponse as JWTToken
+     */	
 	@PostMapping("/addbankDetails")
 	public ResponseEntity<ResponseDTO> addingBankDetails(@RequestHeader  String token,@RequestBody LmsBankInfoDTO bankInfoDTO){
 		ResponseDTO respDTO = bankService.addingBankDetails(token,bankInfoDTO);
 		return new ResponseEntity<ResponseDTO>(respDTO, HttpStatus.OK);
 	}
 	
+	 /**
+     * Take  candidate bank details from database database
+     *
+     * @param  token
+     * @return response is all candidate data
+     */
 	@GetMapping("/getallbankDetails")
 	public ResponseEntity<ResponseDTO> getStatus(@RequestHeader String token) {
 		ResponseDTO respDTO = bankService.getAllBankDeatils(token);
 		return new ResponseEntity<ResponseDTO>(respDTO, HttpStatus.OK);
 	}
 	
+	 /**
+     * Take candidate bank details to update data in database
+     *
+     * @param long bankId, bankInfoDTO body and token
+     * @return UserResponse as JWTToken
+     */
 	@PutMapping("/updatebankdetails/{id}")
 	public ResponseEntity<ResponseDTO> updateBankInfo(@RequestHeader  String token,@PathVariable long id, @RequestBody LmsBankInfoDTO bankInfoDTO) {
 		ResponseDTO respDTO = bankService.updateBankInfo(token,id,bankInfoDTO);
 		return new ResponseEntity<ResponseDTO>(respDTO, HttpStatus.OK);
 	}
 	
+	 /**
+     * Take candidate bankId to delete candidate bank data in database
+     *
+     * @param long bankId and token
+     * @return candidate profile
+     */
 	@DeleteMapping("/deletebankdetails/{id}")
 	public ResponseEntity<ResponseDTO> deleteBankDetails(@RequestHeader  String token,@PathVariable long id) {
 		bankService.deleteBankDetails(token,id);

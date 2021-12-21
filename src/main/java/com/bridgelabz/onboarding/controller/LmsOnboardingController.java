@@ -56,7 +56,7 @@ public class LmsOnboardingController {
 	
 	
 	@PostMapping("/jobofferMail")
-	public ResponseEntity<ResponseDTO> jobOfferMail(@RequestHeader String token, @RequestBody String email)
+	public ResponseEntity<ResponseDTO> jobOfferMail(@RequestHeader String token, @RequestHeader String email)
 	{
 		ResponseDTO respDTO = onboardingService.jobOfferMail(token, email);
 		return new ResponseEntity<ResponseDTO>(respDTO, HttpStatus.OK);

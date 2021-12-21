@@ -22,6 +22,8 @@ public class LmsQualificationService implements ILmsQualificationService {
 	ModelMapper mapper;
 	@Autowired
 	LmsQualificationRepository qualificationRepository;
+	@Autowired
+	SequenceGenerator sequenceGenerator;
 	
 	@Override
 	public ResponseDTO getQualificationData(String token) {
@@ -31,12 +33,15 @@ public class LmsQualificationService implements ILmsQualificationService {
 	}
 	
 
+	@SuppressWarnings("static-access")
 	@Override
 	public ResponseDTO addCandidateQualificationData(String token, LmsQualificationDTO qualificationDTO) {
 		// TODO Auto-generated method stub
-		LmsQualificationInfo candidate = mapper.map(qualificationDTO, LmsQualificationInfo.class);
+		LmsQualificationInfo candidate = new LmsQualificationInfo();
+		candidate.setId(sequenceGenerator.generateSequence(candidate.SEQUENCE_NAME));
+		candidate.addQualificationData(qualificationDTO);
 		qualificationRepository.save(candidate);
-		return new ResponseDTO("Candidate Qualification is Added :", jwtToken.createToken(candidate.getId()));
+		return new ResponseDTO("Candidate Qualification is Added :",candidate);
 	}
 
 

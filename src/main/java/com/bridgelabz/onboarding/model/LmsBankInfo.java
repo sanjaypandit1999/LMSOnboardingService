@@ -2,21 +2,21 @@ package com.bridgelabz.onboarding.model;
 
 import java.time.LocalDate;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.bridgelabz.onboarding.dto.LmsBankInfoDTO;
 
 import lombok.Data;
+
+@Document(collection ="bank_info")
 @Data
-@Entity
-@Table(name="bank_info")
 public class LmsBankInfo {
+	@Transient
+    public static final String SEQUENCE_NAME = "bankId_sequence";
+	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 
 	public String panNumber;
@@ -34,7 +34,7 @@ public class LmsBankInfo {
 	
 	}
 
-	public LmsBankInfo(long id,LmsBankInfoDTO bankInfoDTO) {
+	public void addBankInfo(LmsBankInfoDTO bankInfoDTO) {
 		this.panNumber = bankInfoDTO.getPanNumber();
 		this.aadharNumber = bankInfoDTO.getAadharNumber();
 		this.bankName = bankInfoDTO.getBankName();

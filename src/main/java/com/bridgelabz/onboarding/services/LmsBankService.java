@@ -22,11 +22,16 @@ public class LmsBankService implements ILmsBankService {
 	LmsBankRepository bankRepository;
 	@Autowired
 	ModelMapper mapper;
+	@Autowired
+	SequenceGenerator sequenceGenerator;
 
+	@SuppressWarnings("static-access")
 	@Override
 	public ResponseDTO addingBankDetails(String token, LmsBankInfoDTO bankInfoDTO) {
 		// TODO Auto-generated method stub
-			LmsBankInfo lmsBankInfo = mapper.map(bankInfoDTO, LmsBankInfo.class);
+			LmsBankInfo lmsBankInfo = new LmsBankInfo();
+			lmsBankInfo.setId(sequenceGenerator.generateSequence(lmsBankInfo.SEQUENCE_NAME));
+			lmsBankInfo.addBankInfo(bankInfoDTO);
 			bankRepository.save(lmsBankInfo);
 			return new ResponseDTO("Added Bank Details: ", lmsBankInfo);	
 	}

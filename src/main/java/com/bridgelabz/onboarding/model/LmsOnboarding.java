@@ -2,28 +2,21 @@ package com.bridgelabz.onboarding.model;
 
 import java.time.LocalDate;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.bridgelabz.onboarding.dto.LmsOnboardingDTO;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.Data;
 
-@Entity
-@Table(name = "onboarding_candidate")
+@Document(collection="OnboardingCandidate")
 @Data
 public class LmsOnboarding {
 	
+	@Transient
+    public static final String SEQUENCE_NAME = "candidate_sequence";
+	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 	
 	public String firstName;
@@ -44,13 +37,19 @@ public class LmsOnboarding {
 	public LocalDate creatorStamp;
 	public LocalDate updateStamp;
 	
+	private LmsBankInfo candidateBankInfo;
+
+
+	private LmsQualificationInfo CandidateQualificationInfo;
+	
+	
 	
 	public LmsOnboarding() {
 	}
 	
 
 
-	public LmsOnboarding(long id, LmsOnboardingDTO lmsOnboardingDTO) {
+	public void addData(LmsOnboardingDTO lmsOnboardingDTO) {
 		// TODO Auto-generated constructor stub
 		this.firstName = lmsOnboardingDTO.getFirstName();
 		this.middleName = lmsOnboardingDTO.getMiddleName();

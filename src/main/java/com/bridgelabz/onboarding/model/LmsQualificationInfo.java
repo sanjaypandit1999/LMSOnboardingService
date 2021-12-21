@@ -1,22 +1,20 @@
 package com.bridgelabz.onboarding.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.validation.Valid;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.bridgelabz.onboarding.dto.LmsQualificationDTO;
 
 import lombok.Data;
 
-@Entity
-@Table(name = "qualification_info")
+@Document(collection="qualification_info")
 public @Data class LmsQualificationInfo {
 	
+	@Transient
+    public static final String SEQUENCE_NAME = "qualification_sequence";
+	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 	
 	public boolean diploma;
@@ -35,7 +33,7 @@ public @Data class LmsQualificationInfo {
 		
 	}
 
-	public LmsQualificationInfo(long id, @Valid LmsQualificationDTO qualificationDTO) 
+	public void addQualificationData(LmsQualificationDTO qualificationDTO) 
 	{
 		this.degree = qualificationDTO.getDegree();
 		this.filed = qualificationDTO.getFiled();
